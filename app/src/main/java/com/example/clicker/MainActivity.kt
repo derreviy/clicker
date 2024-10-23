@@ -95,6 +95,7 @@ fun Clicker(onTap: () -> Unit){
     }
 }
 
+
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     var coins by remember { mutableIntStateOf(0) }
@@ -152,7 +153,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     }
                     Spacer(Modifier.padding(8.dp))
                     Button(onClick = {
+                        coins = 0
+                        isShopOpen = false
                         buff = 1
+                        diamonds = 0
+                        woods = 0
                     }) {
                         Text(text = "res")
                     }
