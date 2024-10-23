@@ -51,7 +51,8 @@ class MainActivity : ComponentActivity() {
 fun InfoBar(
     coins: Int,
     diamonds: Int,
-    woods: Int
+    woods: Int,
+    buff: Int
 ){
 
     Row {
@@ -67,6 +68,11 @@ fun InfoBar(
         Spacer(Modifier.padding(8.dp))
         Text(
             text = "$woods \uD83E\uDEB5",
+            modifier = Modifier
+        )
+        Spacer(Modifier.padding(8.dp))
+        Text(
+            text = "$buff",
             modifier = Modifier
         )
     }
@@ -92,17 +98,17 @@ fun Clicker(onTap: () -> Unit){
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     var coins by remember { mutableIntStateOf(0) }
-    var modificator by remember { mutableIntStateOf(1) }
+    var buff by remember { mutableIntStateOf(1) }
     var diamonds by remember { mutableIntStateOf(0) }
     var woods by remember { mutableIntStateOf(0) }
     var isShopOpen by remember { mutableStateOf(false) }
 
     Box(modifier.fillMaxSize()) {
         Clicker {
-            coins += modificator
+            coins += buff
             if (coins >= 1000){
                 diamonds += 1
-                coins -= 1000
+                coins = 0
             }
         }
         Column(modifier.fillMaxSize()) {
@@ -119,13 +125,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     Text(text = "+1 diamond")
                 }
             }
-            InfoBar(coins, diamonds, woods)
+            InfoBar(coins, diamonds, woods, buff)
             if (isShopOpen) {
                 Row {
                     Button(onClick = {
                         if (diamonds >= 1){
                             diamonds -= 1
-                            modificator *= 2
+                            buff *= 2
                         }else{
                              return@Button
                         }
@@ -136,7 +142,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     Button(onClick = {
                         if (diamonds >= 2){
                             diamonds -= 2
-                            modificator *= 4
+                            buff *= 4
                         }else{
                             return@Button
                         }
@@ -146,7 +152,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     }
                     Spacer(Modifier.padding(8.dp))
                     Button(onClick = {
-                        modificator = 1
+                        buff = 1
                     }) {
                         Text(text = "res")
                     }
