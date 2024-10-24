@@ -1,9 +1,12 @@
 package com.example.clicker
 
 import android.os.Bundle
+import android.view.TextureView
+import android.widget.ImageButton
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +40,6 @@ class MainActivity : ComponentActivity() {
             ClickerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "hi",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -97,7 +99,7 @@ fun Clicker(onTap: () -> Unit){
 
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier) {
     var coins by remember { mutableIntStateOf(0) }
     var buff by remember { mutableIntStateOf(1) }
     var diamonds by remember { mutableIntStateOf(0) }
@@ -118,12 +120,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     isShopOpen = !isShopOpen
                 }) {
                     Text(text = "\uD83D\uDED2")
-                }
-                Spacer(Modifier.padding(20.dp))
-                Button(onClick = {
-                    diamonds += 1
-                }) {
-                    Text(text = "+1 diamond")
                 }
             }
             InfoBar(coins, diamonds, woods, buff)
@@ -161,10 +157,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     }) {
                         Text(text = "res")
                     }
+                    Spacer(Modifier.padding(12.dp))
+                    Button(onClick = {
+                        diamonds += 1
+                    }) {
+                        Text(text = "+1 diamond")
+                    }
                 }
             }
         }
 
     }
 }
-
