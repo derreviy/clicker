@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,10 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.compose.ui.unit.dp
 import com.example.clicker.ui.theme.ClickerTheme
-import kotlin.coroutines.coroutineContext
+
 
 
 class MainActivity : ComponentActivity() {
@@ -170,6 +168,7 @@ fun Greeting(modifier: Modifier = Modifier) {
                     Spacer(Modifier.padding(12.dp))
                     Button(onClick = {
                         diamonds += 1
+                        Toast.makeText(context,"Спасибо за покупку!", Toast.LENGTH_LONG).show()
                     }) {
                         Text(text = "+1 diamond")
                     }
