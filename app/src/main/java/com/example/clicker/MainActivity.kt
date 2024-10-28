@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -107,42 +109,60 @@ fun Greeting(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var one by remember { mutableStateOf(false) }
 
-    Box(modifier.fillMaxSize()) {
-        Clicker {
-            coins += buff
-            if (coins >= 1000){
-                diamonds += 1
-                coins = 0
-            }
-        }
-        Column(modifier.fillMaxSize()) {
-            Row {
-                Button(onClick = {
-                    isShopOpen = !isShopOpen
-                    one = false
-                }) {
-                    Text(text = "\uD83D\uDED2")
-                }
-            }
-            InfoBar(coins, diamonds, woods, buff)
-            if (isShopOpen) {
-                Row {
+    when (isShopOpen) {
+        true ->
+            Box(modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier.padding(vertical = 50.dp, horizontal = 75.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Button(onClick = {
-                        if (diamonds >= 1){
+                        diamonds += 1
+                        if (!one) {
+                            Toast.makeText(context, "Спасибо за покупку!", Toast.LENGTH_SHORT)
+                                .show()
+                            one = true
+                        } else if (diamonds == 5) {
+                            Toast.makeText(
+                                context,
+                                "Не ожидал что вы так богаты!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else if (diamonds == 10) {
+                            Toast.makeText(
+                                context,
+                                "Ты кликаешь не ту кнопку чёрт!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }) {
+                        Text(text = "+1 diamond")
+                    }
+                }
+                Row {
+                    TextButton(onClick = {
+                        isShopOpen = false
+                    }) {
+                        Text(text = "< Back")
+                    }
+                    Spacer(Modifier.padding(8.dp))
+                    Button(onClick = {
+                        if (diamonds >= 1) {
                             diamonds -= 1
                             buff *= 2
-                        }else{
-                             return@Button
+                        } else {
+                            return@Button
                         }
                     }) {
                         Text(text = "x2")
                     }
                     Spacer(Modifier.padding(8.dp))
                     Button(onClick = {
-                        if (diamonds >= 2){
+                        if (diamonds >= 2) {
                             diamonds -= 2
                             buff *= 4
-                        }else{
+                        } else {
                             return@Button
                         }
 
@@ -156,30 +176,39 @@ fun Greeting(modifier: Modifier = Modifier) {
                         buff = 1
                         diamonds = 0
                         woods = 0
-
-                        Toast.makeText(context,"Все сброшено!", Toast.LENGTH_SHORT).show()
-
+                        Toast.makeText(context, "Все сброшено!", Toast.LENGTH_SHORT).show()
                     }) {
                         Text(text = "res")
                     }
-                    Spacer(Modifier.padding(12.dp))
-                    Button(onClick = {
 
-                        diamonds += 1
-                        if (!one) {
-                            Toast.makeText(context, "Спасибо за покупку!", Toast.LENGTH_SHORT).show()
-                            one = true
-                        }else if (diamonds == 5){
-                            Toast.makeText(context, "Не ожидал что вы так богаты!", Toast.LENGTH_SHORT).show()
-                        }else if (diamonds == 10){
-                            Toast.makeText(context, "Ты кликаешь не ту кнопку чёрт!", Toast.LENGTH_SHORT).show()
-                        }
-                    }) {
-                        Text(text = "+1 diamond")
-                    }
+                }
+            }
+
+        false -> Box(modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp)
+            ) {
+                InfoBar(coins, diamonds, woods, buff)
+            }
+            Row {
+                OutlinedButton(
+                    modifier = Modifier.padding(vertical = 20.dp, horizontal = 10.dp),
+                    onClick = {
+                    isShopOpen = !isShopOpen
+                    one = false
+                }) {
+                    Text(text = "\uD83D\uDED2")
+                }
+            }
+            Clicker {
+                coins += buff
+                if (coins >= 1000) {
+                    diamonds += 1
+                    coins = 0
                 }
             }
         }
+
 
     }
 }
