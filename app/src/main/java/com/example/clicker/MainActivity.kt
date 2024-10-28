@@ -1,7 +1,6 @@
 package com.example.clicker
 
 import android.os.Bundle
-
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,8 +48,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
 
 @Composable
 fun InfoBar(
@@ -100,7 +97,6 @@ fun Clicker(onTap: () -> Unit){
     }
 }
 
-
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
     var coins by remember { mutableIntStateOf(0) }
@@ -109,6 +105,7 @@ fun Greeting(modifier: Modifier = Modifier) {
     var woods by remember { mutableIntStateOf(0) }
     var isShopOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var one by remember { mutableStateOf(false) }
 
     Box(modifier.fillMaxSize()) {
         Clicker {
@@ -122,6 +119,7 @@ fun Greeting(modifier: Modifier = Modifier) {
             Row {
                 Button(onClick = {
                     isShopOpen = !isShopOpen
+                    one = false
                 }) {
                     Text(text = "\uD83D\uDED2")
                 }
@@ -129,7 +127,6 @@ fun Greeting(modifier: Modifier = Modifier) {
             InfoBar(coins, diamonds, woods, buff)
             if (isShopOpen) {
                 Row {
-
                     Button(onClick = {
                         if (diamonds >= 1){
                             diamonds -= 1
@@ -160,15 +157,23 @@ fun Greeting(modifier: Modifier = Modifier) {
                         diamonds = 0
                         woods = 0
 
-                        Toast.makeText(context,"Все сброшено!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Все сброшено!", Toast.LENGTH_SHORT).show()
 
                     }) {
                         Text(text = "res")
                     }
                     Spacer(Modifier.padding(12.dp))
                     Button(onClick = {
+
                         diamonds += 1
-                        Toast.makeText(context,"Спасибо за покупку!", Toast.LENGTH_LONG).show()
+                        if (!one) {
+                            Toast.makeText(context, "Спасибо за покупку!", Toast.LENGTH_SHORT).show()
+                            one = true
+                        }else if (diamonds == 5){
+                            Toast.makeText(context, "Не ожидал что вы так богаты!", Toast.LENGTH_SHORT).show()
+                        }else if (diamonds == 10){
+                            Toast.makeText(context, "Ты кликаешь не ту кнопку чёрт!", Toast.LENGTH_SHORT).show()
+                        }
                     }) {
                         Text(text = "+1 diamond")
                     }
