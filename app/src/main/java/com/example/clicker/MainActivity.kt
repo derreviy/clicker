@@ -1,12 +1,12 @@
 package com.example.clicker
 
 import android.os.Bundle
-import android.view.TextureView
-import android.widget.ImageButton
+
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedVisibility
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.unit.dp
 import com.example.clicker.ui.theme.ClickerTheme
+import kotlin.coroutines.coroutineContext
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +51,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 @Composable
 fun InfoBar(
@@ -105,6 +110,7 @@ fun Greeting(modifier: Modifier = Modifier) {
     var diamonds by remember { mutableIntStateOf(0) }
     var woods by remember { mutableIntStateOf(0) }
     var isShopOpen by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Box(modifier.fillMaxSize()) {
         Clicker {
@@ -125,6 +131,7 @@ fun Greeting(modifier: Modifier = Modifier) {
             InfoBar(coins, diamonds, woods, buff)
             if (isShopOpen) {
                 Row {
+
                     Button(onClick = {
                         if (diamonds >= 1){
                             diamonds -= 1
@@ -154,6 +161,9 @@ fun Greeting(modifier: Modifier = Modifier) {
                         buff = 1
                         diamonds = 0
                         woods = 0
+
+                        Toast.makeText(context,"Все сброшено!", Toast.LENGTH_LONG).show()
+
                     }) {
                         Text(text = "res")
                     }
