@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,12 @@ import androidx.compose.ui.unit.dp
 import com.example.clicker.ui.theme.ClickerTheme
 
 
+
+sealed interface State {
+    data object DefaultState : State
+    data object TwoEtapState : State
+    data object ThreeEtapState : State
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +115,8 @@ fun Greeting(modifier: Modifier = Modifier) {
     var isShopOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var one by remember { mutableStateOf(false) }
+    var state: State by remember { mutableStateOf(State.DefaultState) }
+
 
     when (isShopOpen) {
         true ->
@@ -200,13 +209,42 @@ fun Greeting(modifier: Modifier = Modifier) {
                     Text(text = "\uD83D\uDED2")
                 }
             }
-            Clicker {
-                coins += buff
-                if (coins >= 1000) {
-                    diamonds += 1
-                    coins = 0
+            // я знаю что можно проще но я уже зделал
+            when (state){
+                is State.DefaultState -> {
+                    Clicker {
+                        coins += buff
+                        if (coins >= 1000) {
+                            diamonds += 1
+                            coins = 0
+                            if (buff>= 500)
+                                state = State.TwoEtapState
+                        }
+                    }
+                }
+                is State.TwoEtapState -> {
+                    Clicker {
+                        coins += buff
+                        if (coins >= 10000) {
+                            woods += 1
+                            coins = 0
+                            if (buff >= 1000)
+                                state = State.ThreeEtapState
+                        }
+                    }
+                }
+                is State.ThreeEtapState -> {
+                    Clicker {
+                        coins += buff
+                        if (coins >= 100000) {
+                            diamonds += 100
+                            woods += 1
+                            coins = 0
+                        }
+                    }
                 }
             }
+
         }
 
 
