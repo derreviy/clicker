@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.clicker.ui.theme.ClickerTheme
 
 
@@ -102,7 +103,12 @@ fun Clicker(onTap: () -> Unit){
             }
             ,
             modifier = Modifier.height(80.dp).width(120.dp),
-        ){ Text(text = "Click") }
+        ){
+            Column(horizontalAlignment = Alignment.CenterHorizontally){
+                Text("Click", fontSize = 25.sp)
+            }
+
+        }
     }
 }
 
