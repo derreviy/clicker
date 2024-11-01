@@ -1,5 +1,7 @@
 package com.example.clicker
 
+import android.content.ClipData.Item
+import android.icu.util.ULocale.AvailableType
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -15,6 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -28,12 +34,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clicker.ui.theme.ClickerTheme
 
-
+data class ShopItem(
+    val name: String,
+    val price: Int,
+    val onBuy:  () -> Unit,
+    var isAvailable: Boolean = true,
+    val isMultiple: Boolean = false
+)
 
 sealed interface State {
     data object DefaultState : State
@@ -122,79 +135,68 @@ fun Greeting(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var one by remember { mutableStateOf(false) }
     var state: State by remember { mutableStateOf(State.DefaultState) }
+    var shopItems by remember { mutableStateOf(arrayListOf(
+        ShopItem(
+            name = "x2", price = 1, onBuy = { buff *= 2 }
+        ),
+        ShopItem(
+            name = "x4", price = 2, onBuy = { buff *= 4 }
+        ),
+        ShopItem(
+            name = "res", price = 0, isMultiple = true, onBuy = {
+                coins = 0
+                isShopOpen = false
+                buff = 1
+                diamonds = 0
+                woods = 0
+                Toast.makeText(context, "Все сброшено!", Toast.LENGTH_SHORT).show()
+            }
+        ),
+        ShopItem(
+            name = "+1 diamons", isMultiple = true, price = 0, onBuy = {
+                diamonds += 1
+            }
+        )
+        )
+    )}
+
+
+
+
 
 
     when (isShopOpen) {
         true ->
-            Box(modifier.fillMaxSize()) {
+            Column(modifier.fillMaxSize()) {
                 Column(
-                    modifier = Modifier.padding(vertical = 50.dp, horizontal = 75.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+
                 ) {
-                    Button(onClick = {
-                        diamonds += 1
-                        if (!one) {
-                            Toast.makeText(context, "Спасибо за покупку!", Toast.LENGTH_SHORT)
-                                .show()
-                            one = true
-                        } else if (diamonds == 5) {
-                            Toast.makeText(
-                                context,
-                                "Не ожидал что вы так богаты!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else if (diamonds == 10) {
-                            Toast.makeText(
-                                context,
-                                "Ты кликаешь не ту кнопку чёрт!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }) {
-                        Text(text = "+1 diamond")
-                    }
-                }
-                Row {
                     TextButton(onClick = {
                         isShopOpen = false
                     }) {
                         Text(text = "< Back")
                     }
-                    Spacer(Modifier.padding(8.dp))
-                    Button(onClick = {
-                        if (diamonds >= 1) {
-                            diamonds -= 1
-                            buff *= 2
-                        } else {
-                            return@Button
-                        }
-                    }) {
-                        Text(text = "x2")
-                    }
-                    Spacer(Modifier.padding(8.dp))
-                    Button(onClick = {
-                        if (diamonds >= 2) {
-                            diamonds -= 2
-                            buff *= 4
-                        } else {
-                            return@Button
-                        }
+                }
+                 LazyHorizontalGrid (
+                     rows = GridCells.Adaptive(40.dp),
+                     modifier = Modifier.fillMaxSize()
+                 ){
+                     items(shopItems) { item ->
+                         if (item.isAvailable)
+                         Button(
+                             onClick = {
+                            if (item.price<= diamonds) {
+                                if (!item.isMultiple) {
+                                    item.isAvailable = false
+                                    shopItems.remove(item)
+                                }
+                                item.onBuy()
+                                diamonds -= item.price
+                            }
+                     }) {
+                         Text(text = "${item.name}\n${item.price} \uD83D\uDC8E")
+                     } }
 
-                    }) {
-                        Text(text = "x4")
-                    }
-                    Spacer(Modifier.padding(8.dp))
-                    Button(onClick = {
-                        coins = 0
-                        isShopOpen = false
-                        buff = 1
-                        diamonds = 0
-                        woods = 0
-                        Toast.makeText(context, "Все сброшено!", Toast.LENGTH_SHORT).show()
-                    }) {
-                        Text(text = "res")
-                    }
 
                 }
             }
