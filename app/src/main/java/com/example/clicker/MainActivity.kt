@@ -1,13 +1,11 @@
 package com.example.clicker
 
-import android.content.ClipData.Item
-import android.icu.util.ULocale.AvailableType
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,11 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clicker.ui.theme.ClickerTheme
+//import androidx.lifecycle.ViewModel
+//import androidx.compose.runtime.NonRestartableComposable
+
 
 data class ShopItem(
     val name: String,
@@ -71,6 +71,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+//class GameViewModel : ViewModel() {
+//}
+//
+//data class GameUiState(
+//    val infoBar: String = ""
+//)
+
 
 @Composable
 fun InfoBar(
@@ -110,21 +117,23 @@ fun Clicker(onTap: () -> Unit){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        Button(
-            onClick = {
-                onTap()
-            }
-            ,
-            modifier = Modifier.height(80.dp).width(120.dp),
-        ){
+        ElevatedButton(
+            onClick = { onTap() },
+            modifier = Modifier.height(80.dp).width(120.dp)
+            ){
             Column(horizontalAlignment = Alignment.CenterHorizontally){
-                Text("Click", fontSize = 25.sp)
+                Text(
+                    "Click",
+                    fontSize = 25.sp
+                )
             }
-
         }
     }
 }
 
+
+
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
     var coins by remember { mutableIntStateOf(0) }
@@ -135,7 +144,7 @@ fun Greeting(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var one by remember { mutableStateOf(false) }
     var state: State by remember { mutableStateOf(State.DefaultState) }
-    var shopItems by remember { mutableStateOf(arrayListOf(
+    val shopItems by remember { mutableStateOf(arrayListOf(
         ShopItem(
             name = "x2", price = 1, onBuy = { buff *= 2 }
         ),
@@ -168,9 +177,7 @@ fun Greeting(modifier: Modifier = Modifier) {
     when (isShopOpen) {
         true ->
             Column(modifier.fillMaxSize()) {
-                Column(
-
-                ) {
+                Column {
                     TextButton(onClick = {
                         isShopOpen = false
                     }) {
